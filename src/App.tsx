@@ -176,7 +176,7 @@ function App() {
         {/* Header */}
         <header className="mb-5">
           <h1 className="text-xl font-medium mb-0.5">
-            Hey, I&apos;m Yaqoob
+            Hey, I&apos;m  Yaqoob
           </h1>
           <span className="inline-block text-[11px] font-medium uppercase tracking-wider text-muted mb-1.5">
             Full Stack Engineer
