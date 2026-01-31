@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ActivitySection } from '@/components/ActivitySection';
 
 // Birth date for age timer (adjust to your actual birth date)
-const BIRTH_DATE = new Date('2003-01-15T00:00:00Z');
+const BIRTH_DATE = new Date('2003-11-28T00:00:00Z');
 
 // Social links data
 const socialLinks = [
@@ -262,6 +262,7 @@ function App() {
                 </div>
               ))}
             </div>
+          <ActivitySection />
           </TabsContent>
 
           <TabsContent
@@ -299,7 +300,7 @@ function App() {
           </TabsContent>
         </Tabs>
 
-        <ActivitySection />
+        
 
         <section className="mt-6">
           <h2 className="text-[11px] font-medium uppercase tracking-wider text-muted mb-2">skills</h2>
