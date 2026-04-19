@@ -17,13 +17,6 @@ const socialLinks = [
 
 // Experience data
 const experiences = [
-  {
-    title: 'Full Stack Engineer',
-    company: 'Open Source ',
-    period: '2023-Present',
-    description: 'Contributed to open source projects like twenty,encore.',
-    tech: ['React', 'TypeScript', 'Node.js','Golang','PostgreSQL','MongoDB','Docker','AWS','CI/CD'],
-  }
 ];
 
 // Projects data: href = live URL, github = profile/repo (fix repo path as needed)
@@ -39,18 +32,9 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    id: 6,
-    title: 'Signal',
-    href: 'https://signal-inky.vercel.app/',
-    imgUrl: '/images/signal.png',
-    description: 'A real time stock market app',
-    github: 'https://github.com/moyaqoob',
-    tech: ['React', 'Node.js', 'WebSocket', 'PostgreSQL'],
-  },
-  {
     id: 1,
-    title: 'Awwards Website',
-    href: 'https://awards-website-delta.vercel.app/',
+    title: 'Zebra Search',
+    href: 'https://zebrasearch.moyaqoob28.workers.dev/',
     imgUrl: '/images/zentry.png',
     description: 'GSAP powered animated website',
     github: 'https://github.com/moyaqoob',
@@ -66,6 +50,24 @@ export const projects: Project[] = [
     tech: ['Next.js', 'TypeScript', 'GitHub API'],
   },
   {
+    id: 4,
+    title: 'Sketch.io',
+    href: 'https://sketch-io.moyaqoob28.workers.dev/',
+    imgUrl: '/images/scribly.png',
+    description: 'A whiteboard app that allows you to draw and collaborate in realtime',
+    github: 'https://github.com/moyaqoob/Sketch.io',
+    tech: ['React', 'Nodejs', 'Canvas API','websocket'],
+  },
+  {
+    id: 6,
+    title: 'Signal',
+    href: 'https://signal-inky.vercel.app/',
+    imgUrl: '/images/signal.png',
+    description: 'A real time stock market app',
+    github: 'https://github.com/moyaqoob',
+    tech: ['React', 'Node.js', 'WebSocket', 'PostgreSQL'],
+  },
+  {
     id: 3,
     title: 'FlowBoard',
     href: 'https://flow-board-pied.vercel.app/',
@@ -73,15 +75,6 @@ export const projects: Project[] = [
     description: 'A sleek, motion-rich landing page crafted with Tailwind, Next.js, and Framer Motion.',
     github: 'https://github.com/moyaqoob',
     tech: ['Next.js', 'Framer Motion', 'Tailwind CSS'],
-  },
-  {
-    id: 4,
-    title: 'Sketch.io',
-    href: 'https://github.com/moyaqoob/Sketch.io.git',
-    imgUrl: '/images/scribly.png',
-    description: 'A whiteboard app that allows you to draw and collaborate in realtime',
-    github: 'https://github.com/moyaqoob',
-    tech: ['React', 'Socket.io', 'Canvas API'],
   },
   {
     id: 5,
@@ -96,8 +89,8 @@ export const projects: Project[] = [
 
 // Books data
 const books = [
-  { title: 'Clean Code', author: 'Robert C. Martin', note: 'Pragmatic practices for writing maintainable code.' },
-  { title: 'Designing Data-Intensive Applications', author: 'Martin Kleppmann', note: 'Building reliable systems at scale.' },
+  { title: 'Scopes and Closures', author: 'Robert C. Martin', note: 'Internal working on javascript' },
+  { title: 'Architecture Patterns with Python', author: 'Martin Kleppmann', note: 'Helps you understand python in backend at production level' },
   { title: 'The Pragmatic Programmer', author: 'Hunt & Thomas', note: 'Journey to mastery in software development.' },
 ];
 
@@ -106,7 +99,7 @@ const skillLinks = [
   'React',
   'TypeScript',
   'Node.js',
-  'Golang',
+  'Python',
   'PostgreSQL',
   'MongoDB',
   'Docker',
@@ -136,11 +129,10 @@ function App() {
   const age = useAgeSeconds();
 
   useEffect(() => {
-    // Check system preference
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     setDarkMode(prefersDark);
     setTimeout(() => setLoaded(true), 50);
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (darkMode) {
@@ -151,11 +143,10 @@ function App() {
   }, [darkMode]);
 
   return (
-    <div 
+    <div
       className={`min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))] transition-opacity duration-200 ${loaded ? 'opacity-100' : 'opacity-0'}`}
     >
       <div className="max-w-2xl mx-auto px-5 py-8">
-        {/* Top-right: Resume arrow + Theme toggle (safe alignment) */}
         <div className="fixed top-6 right-10 flex items-center gap-2 z-10">
           <Link
             to="/resume"
@@ -264,7 +255,7 @@ function App() {
             </div>
           </TabsContent>
 
-          <TabsContent
+          {/* <TabsContent
             value="experience"
             className="tab-content-natural mt-0 overflow-hidden pt-4 outline-none data-[state=inactive]:animate-tabs-out data-[state=active]:animate-tabs-in"
           >
@@ -281,7 +272,7 @@ function App() {
                 </div>
               ))}
             </div>
-          </TabsContent>
+          </TabsContent> */}
 
           <TabsContent
             value="books"
