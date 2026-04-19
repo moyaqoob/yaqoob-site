@@ -22,6 +22,11 @@ export interface AvatarConfig {
   accessories: string[];
 }
 
+export type SocialLink =
+  | { name: string; href: string; type: 'link' }
+  | { name: string; value: string; type: 'copy' };
+
+
 export interface ChatMessage {
   id: string;
   playerId: string;
