@@ -39,7 +39,7 @@ export const projects: Project[] = [
     title: "Zebra Search",
     href: "https://zebrasearch.moyaqoob28.workers.dev/",
     imgUrl: "/images/zentry.png",
-    description: "GSAP powered animated website",
+    description: "A search engine build exclusively for algorithms,engineering and technical blogs",
     github: "https://github.com/moyaqoob",
     tech: ["GSAP", "React", "Tailwind CSS"],
   },
