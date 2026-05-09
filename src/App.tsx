@@ -16,7 +16,7 @@ const socialLinks:SocialLink[] = [
     href: "https://www.linkedin.com/in/moyaqoob/",
     type: "link",
   },
-  { name: "x", href: "https://x.com/yaqoobstwt", type: "link" },
+  { name: "x", href: "https://x.com/yaqoobxe", type: "link" },
   { name: "email", value: "moyaqoob28@gmail.com", type: "copy" },
 ];
 // Experience data
