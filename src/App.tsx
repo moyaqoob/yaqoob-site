@@ -229,9 +229,9 @@ function App() {
             Hey — I&apos;m Yaqoob.
           </h1>
           <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-muted sm:text-base">
-            I build reliable full-stack systems—search, realtime collaboration,
-            and data-backed interfaces—with AI integrated where it actually
-            helps. About one year of professional experience; based in India.
+            building reliables software that work in the long run. Loved solving the problems in tech.
+            my long term idea is to work a memory layer in AI.
+            based in India
           </p>
           <p
             className="mt-3 font-mono text-[12px] tabular-nums text-muted sm:text-[13px]"
