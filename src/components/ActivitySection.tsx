@@ -193,10 +193,8 @@ export function ActivitySection() {
 
   if (loading && !showSection) {
     return (
-      <section className="mt-6">
-        <h2 className="text-[11px] font-medium uppercase tracking-wider text-muted mb-2">
-          activity
-        </h2>
+      <section className="mt-10">
+        <h2 className="section-heading">Activity</h2>
         <div className="text-[13px] text-muted">Loading activity…</div>
       </section>
     );
@@ -205,10 +203,8 @@ export function ActivitySection() {
   if (!showSection) return null;
 
   return (
-    <section className="mt-6" aria-label="Coding activity">
-      <h2 className="text-[11px] font-medium uppercase tracking-wider text-muted mb-3">
-        activity
-      </h2>
+    <section className="mt-10" aria-label="Coding activity">
+      <h2 className="section-heading">Activity</h2>
       <div className="space-y-4">
         {(github || showGitHubFallback) && (
           <div>
