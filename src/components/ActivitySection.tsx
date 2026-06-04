@@ -39,26 +39,26 @@ function ActivityGrid({
   const levels =
     accent === 'green'
       ? [
-          'bg-[hsl(var(--border))]/40 dark:bg-[hsl(var(--border))]/30',
-          'bg-emerald-400/70 dark:bg-emerald-500/60',
-          'bg-emerald-500/80 dark:bg-emerald-500/70',
-          'bg-emerald-600 dark:bg-emerald-600',
-          'bg-emerald-700 dark:bg-emerald-600',
+          'bg-neutral-200',
+          'bg-emerald-300',
+          'bg-emerald-400',
+          'bg-emerald-500',
+          'bg-emerald-600',
         ]
       : [
-          'bg-[hsl(var(--border))]/40 dark:bg-[hsl(var(--border))]/30',
-          'bg-amber-400/60 dark:bg-amber-500/50',
-          'bg-amber-500/80 dark:bg-amber-500/70',
-          'bg-amber-600 dark:bg-amber-600',
-          'bg-amber-600 dark:bg-amber-600',
+          'bg-neutral-200',
+          'bg-amber-300',
+          'bg-amber-400',
+          'bg-amber-500',
+          'bg-amber-600',
         ];
 
   const cells = grid.flatMap((row) => row);
 
   return (
-    <div className="activity-grid-wrap overflow-x-auto">
+    <div className="overflow-x-auto">
       <div
-        className="grid gap-[2px] w-full"
+        className="grid gap-[2px]"
         style={{
           gridTemplateColumns: 'repeat(53, minmax(0, 1fr))',
           gridAutoRows: 'minmax(10px, 1fr)',
@@ -153,7 +153,6 @@ export function ActivitySection() {
     };
   }, [year]);
 
-  // Build 7 x 53 grid from GitHub weeks
   const githubGrid: (number | undefined)[][] = Array(7)
     .fill(null)
     .map(() => Array(53).fill(undefined));
@@ -167,7 +166,6 @@ export function ActivitySection() {
     });
   }
 
-  // Build 7 x 53 grid from LeetCode submissionCalendar (unix day start -> count)
   const leetcodeGrid: (number | undefined)[][] = Array(7)
     .fill(null)
     .map(() => Array(53).fill(undefined));
@@ -193,32 +191,28 @@ export function ActivitySection() {
 
   if (loading && !showSection) {
     return (
-      <section className="mt-10">
-        <h2 className="section-heading">Activity</h2>
-        <div className="text-[13px] text-muted">Loading activity…</div>
-      </section>
+      <p className="text-sm text-neutral-500">Loading activity...</p>
     );
   }
 
   if (!showSection) return null;
 
   return (
-    <section className="mt-10" aria-label="Coding activity">
-      <h2 className="section-heading">Activity</h2>
+    <div aria-label="Coding activity">
       <div className="space-y-4">
         {(github || showGitHubFallback) && (
           <div>
-            <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="mb-2 flex items-center justify-between gap-2">
               <a
                 href={`https://github.com/${GITHUB_USER}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="link text-[13px] font-medium"
+                className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900 hover:underline underline-offset-4"
               >
                 GitHub
               </a>
               {github && (
-                <span className="text-[12px] text-muted tabular-nums">
+                <span className="text-xs tabular-nums text-neutral-400">
                   {github.totalContributions} contributions in {year}
                 </span>
               )}
@@ -230,12 +224,12 @@ export function ActivitySection() {
                 href={`https://github.com/${GITHUB_USER}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full overflow-x-auto"
+                className="block overflow-x-auto"
               >
                 <img
                   src={`https://ghchart.rshah.org/2e7d32/${GITHUB_USER}`}
                   alt={`${GITHUB_USER}'s GitHub contribution chart`}
-                  className="h-auto w-full max-w-[800px] rounded-[4px]"
+                  className="h-auto w-full max-w-[800px] rounded"
                 />
               </a>
             )}
@@ -243,25 +237,24 @@ export function ActivitySection() {
         )}
         {leetcode && (
           <div>
-            <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+            <div className="mb-2 flex items-center justify-between gap-2 flex-wrap">
               <a
                 href={`https://leetcode.com/u/${LEETCODE_USER}/`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="link text-[13px] font-medium"
+                className="text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900 hover:underline underline-offset-4"
               >
                 LeetCode
               </a>
-              <span className="text-[12px] text-muted tabular-nums">
-                {leetcode.totalSolved} solved · {leetcode.easySolved} / {leetcode.mediumSolved} /{' '}
-                {leetcode.hardSolved} · {leetcode.acceptanceRate.toFixed(1)}% acceptance
+              <span className="text-xs tabular-nums text-neutral-400">
+                {leetcode.totalSolved} solved &middot; {leetcode.easySolved}/{leetcode.mediumSolved}/{leetcode.hardSolved} &middot; {leetcode.acceptanceRate.toFixed(1)}% acceptance
               </span>
             </div>
             <ActivityGrid grid={leetcodeGrid} accent="amber" />
           </div>
         )}
       </div>
-      <p className="text-[11px] text-muted mt-2">Jan — Dec {year}</p>
-    </section>
+      <p className="mt-2 text-xs text-neutral-400">Jan &mdash; Dec {year}</p>
+    </div>
   );
 }

@@ -1,53 +1,36 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Sun, Moon, FileText } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ArrowUpRight } from "lucide-react";
 import { ActivitySection } from "@/components/ActivitySection";
-import { SocialLink } from "./types/game";
 
 const BIRTH_DATE = new Date("2003-01-15T00:00:00Z");
 
-const socialLinks: SocialLink[] = [
-  { name: "github", href: "https://github.com/moyaqoob", type: "link" },
-  {
-    name: "linkedin",
-    href: "https://www.linkedin.com/in/moyaqoob/",
-    type: "link",
-  },
-  { name: "x", href: "https://x.com/yaqoobxe", type: "link" },
-  { name: "email", value: "moyaqoob28@gmail.com", type: "copy" },
-];
-
-export type Project = {
+type Project = {
   id: number;
   title: string;
   href?: string;
-  description: string;
+  summary: string;
+  body: string;
   github: string;
-  tech?: string[];
+  tech: string[];
 };
 
-export const projects: Project[] = [
+const projects: Project[] = [
   {
     id: 1,
     title: "Zebra Search",
     href: "https://zebrasearch.moyaqoob28.workers.dev/",
-    description:
-      "A focused search engine for algorithms, engineering, and technical writing custom indexing and query flow.",
+    summary: "A technical search engine built from the ground up \u2014 custom tokenizer, inverted index, and a query engine that understands engineering language.",
+    body: "Building a search engine meant confronting every abstraction I usually take for granted. Zebra Search is the result: a custom tokenizer that breaks down technical queries, an inverted index that maps terms to documents efficiently, and a query runtime that ranks results by relevance. The stack is pure TypeScript running on Node.js, with the indexing pipeline designed to handle the vocabulary of algorithms, engineering papers, and technical writing. Every component \u2014 from the parser to the ranking function \u2014 was written without depending on off-the-shelf search libraries.",
     github: "https://github.com/moyaqoob",
-    tech: [
-      "TypeScript",
-      "Tokenizer / indexer",
-      "Query engine",
-      "Node.js",
-    ],
+    tech: ["TypeScript", "Tokenizer \u2011 indexer", "Query engine", "Node.js"],
   },
   {
     id: 2,
     title: "Sketch.io",
     href: "https://sketch-io.moyaqoob28.workers.dev/",
-    description:
-      "Collaborative whiteboard with realtime sync—canvas rendering, presence, and low-latency updates.",
+    summary: "A collaborative whiteboard that syncs strokes in real time \u2014 canvas rendering, presence awareness, and low-latency updates.",
+    body: "Sketch.io is what happens when you combine a Canvas API with WebSockets and see what emerges. Multiple users can draw on the same board simultaneously, with each stroke broadcast and rendered in near real-time. The challenge was reconciling local drawing state with remote updates without causing visual tearing or conflicts. I built a CRDT-inspired reconciliation layer on top of Node.js and WebSockets, with React handling the UI shell and the Canvas API managing the pixel-perfect rendering. Presence indicators show who else is in the room and what they are working on.",
     github: "https://github.com/moyaqoob/Sketch.io",
     tech: ["React", "Node.js", "Canvas API", "WebSocket"],
   },
@@ -55,8 +38,8 @@ export const projects: Project[] = [
     id: 3,
     title: "Signal",
     href: "https://signal-inky.vercel.app/",
-    description:
-      "Live market dashboard with streaming updates so decisions are based on current data, not stale snapshots.",
+    summary: "A live market dashboard that streams real-time data \u2014 because stale information is worse than no information.",
+    body: "Financial data loses value by the second. Signal is a dashboard that subscribes to live market feeds and pushes updates to the UI as they arrive. The backend uses WebSockets to maintain persistent connections to data sources, with PostgreSQL storing historical snapshots for analysis. On the frontend, React handles the rapid state changes gracefully \u2014 charts re-render without jank, and the UI stays responsive even under high-frequency updates. The architecture is built for extensibility: adding a new data source means writing one adapter.",
     github: "https://github.com/moyaqoob",
     tech: ["React", "Node.js", "WebSocket", "PostgreSQL"],
   },
@@ -64,35 +47,24 @@ export const projects: Project[] = [
     id: 4,
     title: "Accredian landing",
     href: "https://accredian-khaki.vercel.app/",
-    description: "Client-facing marketing site performance, layout polish, and clear conversion paths.",
+    summary: "A marketing landing page built for conversion \u2014 performance-optimised, layout-polished, and designed to guide visitors toward a clear action.",
+    body: "This was a focused exercise in front-end craft: build a page that loads fast, looks sharp, and converts. Built with Next.js for server-side rendering and optimal Core Web Vitals, the page uses a component-based layout system that made iteration quick. Every section was tuned for visual hierarchy \u2014 the hero, the feature grid, the social proof, the call-to-action. The result is a clean, professional landing page that serves its business purpose without unnecessary complexity.",
     github: "https://github.com/moyaqoob/accredian",
     tech: ["Next.js"],
   },
-];
-
-const aiprojects: Project[] = [
   {
-    id: 1,
-    title: "Micrograd engine",
-    description:
-      "a micrograd engine that shows the abstractions behind the training of a neural network",
+    id: 5,
+    title: "Micrograd Engine",
+    summary: "A minimal autograd engine from scratch that reveals the mathematical machinery behind neural network training.",
+    body: "Micrograd is a from-scratch implementation of automatic differentiation \u2014 the core mechanism that makes gradient descent possible. By building a computational graph where every operation tracks its own gradient, the engine can backpropagate errors through arbitrarily complex networks. Writing it meant reasoning about the chain rule at the level of individual nodes: addition, multiplication, activation functions, and how they compose. It is a teaching tool that makes the black box of deep learning transparent.",
     github: "https://github.com/moyaqoob/micrograd.git",
     tech: ["Math", "Python"],
   },
 ];
 
 const skillLinks = [
-  "React",
-  "TypeScript",
-  "Node.js",
-  "Math",
-  "Python",
-  "PostgreSQL",
-  "MongoDB",
-  "Docker",
-  "Rust",
-  "AWS",
-  "CI/CD",
+  "React", "TypeScript", "Node.js", "Math", "Python",
+  "PostgreSQL", "MongoDB", "Docker", "Rust", "AWS", "CI/CD",
 ];
 
 function useAgeSeconds() {
@@ -111,238 +83,204 @@ function useAgeSeconds() {
   return age;
 }
 
-function ProjectEntry({ project }: { project: Project }) {
+function ProjectCard({ project }: { project: Project }) {
   return (
-    <article className="surface-card group">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-        <div className="min-w-0 flex-1">
-          <h3 className="text-[15px] font-semibold leading-snug tracking-tight text-[hsl(var(--foreground))]">
-            {project.title}
-          </h3>
-          <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
-            {project.description}
-          </p>
-          {project.tech?.length ? (
-            <ul
-              className="mt-2.5 flex flex-wrap gap-1.5"
-              aria-label="Technologies"
-            >
-              {project.tech.map((t) => (
-                <li
-                  key={t}
-                  className="rounded-md border border-[hsl(var(--border))]/80 bg-[hsl(var(--background))]/60 px-2 py-0.5 font-mono text-[11px] leading-none text-muted"
-                >
-                  {t}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-        <div className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-[12px] sm:justify-end sm:pt-0.5">
+    <article className="group flex flex-col rounded-xl border border-neutral-300 bg-white p-5 transition-all hover:border-neutral-500">
+      <div className="mb-2 flex items-start justify-between gap-3">
+        <h3 className="font-heading text-lg font-semibold leading-snug tracking-tight">
+          {project.title}
+        </h3>
+        <div className="flex shrink-0 items-center gap-2 pt-0.5">
           <a
             href={project.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="link font-medium text-[hsl(var(--foreground))]/85 underline-offset-4 hover:underline"
+            className="text-[13px] font-medium text-neutral-500 underline-offset-4 transition-colors hover:text-neutral-900 hover:underline"
           >
             GitHub
           </a>
-          {project.href ? (
+          {project.href && (
             <a
               href={project.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="link font-medium text-[hsl(var(--foreground))]/85 underline-offset-4 hover:underline"
+              className="inline-flex items-center gap-0.5 text-[13px] font-medium text-neutral-500 transition-colors hover:text-neutral-900"
             >
-              Live demo
+              Live
+              <ArrowUpRight size={12} strokeWidth={2} className="transition-transform group-hover:translate-x-0.5" />
             </a>
-          ) : null}
+          )}
         </div>
       </div>
+
+      <p className="mb-2 text-sm leading-relaxed text-neutral-700">
+        {project.summary}
+      </p>
+
+      <div className="mb-3 space-y-1 text-sm leading-relaxed text-neutral-500">
+        {(() => {
+          const s = project.body;
+          const parts = s.split(". ");
+          return parts.slice(0, 3).map((sentence, i) => (
+            <p key={i} className="leading-relaxed">{sentence.trim()}{i < parts.length - 1 && i < 2 ? "." : ""}</p>
+          ));
+        })()}
+      </div>
+
+      {project.tech.length > 0 && (
+        <div className="mt-auto flex flex-wrap gap-1.5" aria-label="Technologies used">
+          {project.tech.map((t) => (
+            <span key={t} className="rounded bg-neutral-100 px-2 py-0.5 font-mono text-[11px] text-neutral-600">
+              {t}
+            </span>
+          ))}
+        </div>
+      )}
     </article>
   );
 }
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [emailCopied, setEmailCopied] = useState(false);
   const age = useAgeSeconds();
 
   useEffect(() => {
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
-    setDarkMode(prefersDark);
-    setTimeout(() => setLoaded(true), 50);
-  }, []);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [darkMode]);
-
-  const copyEmail = useCallback(() => {
-    const entry = socialLinks.find((l) => l.type === "copy");
-    if (!entry || entry.type !== "copy") return;
-    void navigator.clipboard.writeText(entry.value);
-    setEmailCopied(true);
-    window.setTimeout(() => setEmailCopied(false), 2200);
+    setLoaded(true);
   }, []);
 
   const year = new Date().getFullYear();
 
   return (
-    <div
-      className={`page-shell text-[hsl(var(--foreground))] transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"}`}
-    >
-      <div className="fixed top-6 right-10 z-10 flex items-center gap-2">
-        <Link
-          to="/resume"
-          className="rounded-lg p-2 transition-colors hover:bg-[hsl(var(--border))]"
-          aria-label="View resume"
-        >
-          <FileText size={18} />
-        </Link>
-        <button
-          type="button"
-          onClick={() => setDarkMode(!darkMode)}
-          className="rounded-lg p-2 transition-colors hover:bg-[hsl(var(--border))]"
-          aria-label="Toggle theme"
-        >
-          {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
-      </div>
+    <main className={`relative min-h-screen bg-[#f8f8f6] font-heading text-neutral-900 transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}>
+      <div className="fixed inset-0 -z-10 bg-grid-white opacity-60" />
 
-      <main className="mx-auto max-w-[42rem] px-5 py-8 pb-16 sm:px-6">
-        <section className="mb-5 sm:mb-10" aria-labelledby="intro-heading">
-          <p
-            id="intro-heading"
-            className="mb-1.5 inline-block text-[11px] font-medium uppercase tracking-wider text-muted"
-          >
-            Full Stack Developer
-          </p>
-          <h1 className="text-balance text-3xl font-semibold tracking-tight sm:text-[2.125rem] sm:leading-[1.15]">
-            Hey — I&apos;m Yaqoob.
-          </h1>
-          <p className="mt-4 max-w-prose text-[15px] leading-relaxed text-muted sm:text-base">
-            building reliables software that work in the long run. Loved solving the problems in tech.
-            my long term idea is to work a memory layer in AI.
-            based in India
-          </p>
-          <p
-            className="mt-3 font-mono text-[12px] tabular-nums text-muted sm:text-[13px]"
-            aria-live="polite"
-          >
-            <span className="text-muted">been here since </span>
-            {age > 0 ? age.toFixed(7) : "—"}
-          </p>
-        </section>
+      <div className="mx-auto max-w-6xl px-6 py-8 md:py-16">
 
-        <nav
-          className="mb-4 flex flex-wrap items-center gap-2"
-          aria-label="Social and contact"
-        >
-          {socialLinks.map((link) => {
-            if (link.type === "copy") {
-              return (
-                <button
-                  key={link.name}
-                  type="button"
-                  onClick={copyEmail}
-                  className="nav-link-pill link"
-                >
-                  {link.name}
-                </button>
-              );
-            }
-            return (
+        {/* Top nav */}
+        <nav className="mb-16 flex items-center justify-between">
+          <span className="font-heading text-sm font-semibold tracking-tight text-neutral-500">
+            yaqoob.dev
+          </span>
+          <Link
+            to="/resume"
+            className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-neutral-900"
+          >
+            <span className="text-neutral-400">[</span>
+            Resume
+            <span className="text-neutral-400">]</span>
+          </Link>
+        </nav>
+
+        {/* Hero */}
+        <section className="mb-20 md:mb-28" aria-labelledby="hero-heading">
+          <div className="mb-8 flex flex-col items-start gap-6 md:flex-row md:items-center">
+            <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-neutral-300 bg-white md:h-24 md:w-24">
+              <div className="flex h-full w-full items-center justify-center bg-neutral-100 text-3xl font-semibold text-neutral-400 md:text-4xl">
+                Y
+              </div>
+            </div>
+            <div>
+              <p className="mb-1 font-mono text-xs font-medium uppercase tracking-widest text-neutral-500">
+                Full-Stack Developer
+              </p>
+              <h1
+                id="hero-heading"
+                className="font-heading text-5xl font-bold tracking-tight md:text-7xl"
+              >
+                Yaqoob
+              </h1>
+            </div>
+          </div>
+
+          <p className="max-w-prose text-base leading-relaxed text-neutral-700 md:text-lg">
+            Building reliable software that works in the long run. I love solving hard problems in tech &mdash;
+            my long-term focus is working on a memory layer for AI. Based in India.
+          </p>
+
+          <p className="mt-3 font-mono text-xs tabular-nums text-neutral-400" aria-live="polite">
+            <span>been here since </span>
+            {age > 0 ? age.toFixed(7) : "\u2014"}
+          </p>
+
+          {/* Social links */}
+          <nav className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2" aria-label="Social links">
+            {[
+              { label: "GitHub", href: "https://github.com/moyaqoob" },
+              { label: "LinkedIn", href: "https://www.linkedin.com/in/moyaqoob/" },
+              { label: "X", href: "https://x.com/yaqoobxe" },
+            ].map((link) => (
               <a
-                key={link.name}
+                key={link.label}
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="nav-link-pill link"
+                className="font-medium text-neutral-500 underline-offset-4 transition-colors hover:text-neutral-900 hover:underline"
               >
-                {link.name}
+                {link.label}
               </a>
-            );
-          })}
-          <span className="sr-only" aria-live="polite">
-            {emailCopied ? "Email address copied to clipboard." : ""}
-          </span>
-        </nav>
-
-        <section className="mb-2" aria-labelledby="work-heading">
-          <h2 id="work-heading" className="section-heading">
-            Selected work
-          </h2>
-          <Tabs defaultValue="projects" className="w-full">
-            <TabsList className="glass-tabs-list mb-5 inline-flex h-9 w-full max-w-inherit items-center justify-start gap-0.5 rounded-xl p-1 transition-all duration-300">
-              <TabsTrigger
-                value="projects"
-                className="glass-tab-trigger flex-1 rounded-lg px-3 py-1.5 text-[13px] font-medium text-muted transition-all duration-300 data-[state=active]:text-foreground"
-              >
-                Projects
-              </TabsTrigger>
-              <TabsTrigger
-                value="ailearning"
-                className="glass-tab-trigger flex-1 rounded-lg px-3 py-1.5 text-[13px] font-medium text-muted transition-all duration-300 data-[state=active]:text-foreground"
-              >
-                AI learning
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent
-              value="projects"
-              className="tab-content-natural mt-0 overflow-hidden outline-none data-[state=inactive]:animate-tabs-out data-[state=active]:animate-tabs-in"
+            ))}
+            <button
+              type="button"
+              onClick={() => {
+                void navigator.clipboard.writeText("moyaqoob28@gmail.com");
+                setEmailCopied(true);
+                window.setTimeout(() => setEmailCopied(false), 2200);
+              }}
+              className="font-medium text-neutral-500 underline-offset-4 transition-colors hover:text-neutral-900 hover:underline"
             >
-              <div className="space-y-3">
-                {projects.map((project) => (
-                  <ProjectEntry key={project.id} project={project} />
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent
-              value="ailearning"
-              className="tab-content-natural mt-0 overflow-hidden outline-none data-[state=inactive]:animate-tabs-out data-[state=active]:animate-tabs-in"
-            >
-              <div className="space-y-3">
-                {aiprojects.map((project) => (
-                  <ProjectEntry key={project.id} project={project} />
-                ))}
-              </div>
-            </TabsContent>
-          </Tabs>
+              {emailCopied ? "Copied!" : "Email"}
+            </button>
+          </nav>
         </section>
 
-        <ActivitySection />
+        {/* Projects */}
+        <section className="mb-20" aria-labelledby="work-heading">
+          <h2 id="work-heading" className="mb-6 font-mono text-xs font-medium uppercase tracking-widest text-neutral-500">
+            Selected work
+          </h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
+        </section>
 
-        <section className="mt-10" aria-labelledby="skills-heading">
-          <h2 id="skills-heading" className="section-heading">
-            Skills & tools
+        {/* Activity */}
+        <section className="mb-20" aria-labelledby="activity-heading">
+          <h2 id="activity-heading" className="mb-6 font-mono text-xs font-medium uppercase tracking-widest text-neutral-500">
+            Activity
+          </h2>
+          <ActivitySection />
+        </section>
+
+        {/* Skills & tools */}
+        <section className="mb-20" aria-labelledby="skills-heading">
+          <h2 id="skills-heading" className="mb-6 font-mono text-xs font-medium uppercase tracking-widest text-neutral-500">
+            Skills &amp; tools
           </h2>
           <div className="flex flex-wrap gap-2">
             {skillLinks.map((skill) => (
-              <span key={skill} className="skill-pill">
+              <span
+                key={skill}
+                className="rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:border-neutral-500"
+              >
                 {skill}
               </span>
             ))}
           </div>
         </section>
 
-        <footer className="mt-14 border-t border-[hsl(var(--border))] pt-8">
-          <div className="flex flex-col gap-1 text-[13px] text-muted sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-            <p>yaqoob.dev · {year}</p>
-            <p className="sm:text-right">Built with React & Vite</p>
+        {/* Footer */}
+        <footer className="border-t border-neutral-300 pt-8">
+          <div className="flex flex-col gap-1 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
+            <p>yaqoob.dev &middot; {year}</p>
+            <p>Built with React &amp; Vite</p>
           </div>
         </footer>
-      </main>
-    </div>
+
+      </div>
+    </main>
   );
 }
 
