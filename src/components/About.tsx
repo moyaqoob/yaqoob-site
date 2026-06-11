@@ -11,7 +11,7 @@ const About: FC = () => (
     <div className="about-grid">
       <div className="about-body">
         <p>
-          I'm a backend-focused software engineer based in Hyderabad. I think
+          I'm a full stack engineer based in Hyderabad. I think
           the most interesting problems live at the intersection of three things:{' '}
           <strong>mathematics</strong>, which gives you the tools to reason
           precisely; <strong>philosophy</strong>, which teaches you to ask the

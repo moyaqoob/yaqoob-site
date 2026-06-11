@@ -56,7 +56,7 @@ const Projects: FC = () => (
       </a>
 
       <a
-        href="https://github.com/moyaqoob/websearch"
+        href="https://zebrasearch.moyaqoob28.workers.dev/"
         target="_blank"
         className="project-card"
         rel="noreferrer"
