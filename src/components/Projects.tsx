@@ -10,7 +10,7 @@ const Projects: FC = () => (
     </div>
     <div className="projects-grid">
       <a
-        href="https://github.com/moyaqoob"
+        href="https://github.com/moyaqoob/meridian"
         target="_blank"
         className="project-card featured"
         rel="noreferrer"
@@ -83,7 +83,7 @@ const Projects: FC = () => (
       </a>
 
       <a
-        href="https://github.com/moyaqoob"
+        href="https://perplx-web.vercel.app/"
         target="_blank"
         className="project-card"
         rel="noreferrer"
