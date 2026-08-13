@@ -1,111 +1,181 @@
-import type { FC } from 'react';
+import { useEffect, useState, type FC } from 'react';
 
-const Projects: FC = () => (
-  <section id="projects">
-    <div className="section-header">
-      <div>
-        <div className="section-label">Work</div>
-        <h2 className="section-title">Projects</h2>
-      </div>
-    </div>
-    <div className="projects-grid">
-      <a
-        href="https://github.com/moyaqoob/meridian"
-        target="_blank"
-        className="project-card featured"
-        rel="noreferrer"
-      >
+interface Project {
+  id: string;
+  name: string;
+  oneLiner: string;
+  stack: string[];
+  href: string;
+  detail: string[];
+  /** Flagged in UI when details are thinner than resume-backed projects */
+  needsConfirm?: boolean;
+}
+
+const PROJECTS: Project[] = [
+  {
+    id: 'meridian',
+    name: 'Meridian',
+    oneLiner:
+      'Agentic PR reviewer: tree-sitter → pgvector retrieval → staged workers with Redis Streams progress and citation mapping.',
+    stack: ['Python', 'FastAPI', 'pgvector', 'Redis', 'Next.js'],
+    href: 'https://github.com/moyaqoob/meridian',
+    detail: [
+      'Indexes the codebase with tree-sitter chunking and 2048-dim embeddings in pgvector; retrieves top chunks by cosine similarity so reviews are grounded in real context.',
+      'GitHub webhooks (HMAC) kick a 4-stage RQ pipeline: validation → retrieval → generation → citation mapping. Redis dedup (24h TTL) and (repo, PR, head SHA) locking keep generation idempotent.',
+      'Clients get live stage progress over Redis Streams SSE with latency metrics and replay on reconnect — the pipeline is legible, not a black box.',
+    ],
+  },
+  {
+    id: 'zebra',
+    name: 'Zebra Search',
+    oneLiner:
+      'Hybrid BM25 + semantic search from first principles, edge-deployed on Cloudflare D1 with sub-1s query latency.',
+    stack: ['TypeScript', 'Cloudflare Workers', 'D1', 'BM25', 'Embeddings'],
+    href: 'https://zebrasearch.moyaqoob28.workers.dev/',
+    detail: [
+      'Crawler, indexer, multi-factor ranking, and query UI — no off-the-shelf search framework.',
+      '50,000+ pages admitted through quality gates (content length, keyword density, duplicate URL fingerprints).',
+      'Lexical + embedding similarity weighted by freshness decay and domain authority; globally distributed, no cold-start tax.',
+    ],
+  },
+  {
+    id: 'redis-clone',
+    name: 'Redis clone (Rust)',
+    oneLiner:
+      'From-scratch Redis-compatible server over raw TCP / RESP — learning the protocol and concurrency model by building it.',
+    stack: ['Rust', 'TCP', 'RESP'],
+    href: 'https://github.com/moyaqoob',
+    detail: [
+      'Implements the RESP wire protocol and a subset of Redis commands over a raw TCP listener.',
+      'Goal: understand connection handling, command parsing, and in-memory data structures without hiding behind a client library.',
+    ],
+    needsConfirm: true,
+  },
+  {
+    id: 'caretrace',
+    name: 'CareTrace',
+    oneLiner:
+      'Trace-oriented system work — details to confirm (link + one-liner from you).',
+    stack: ['TBD'],
+    href: 'https://github.com/moyaqoob',
+    detail: [
+      'Placeholder: you asked to list CareTrace. Replace this blurb, stack chips, and GitHub URL with the real write-up.',
+    ],
+    needsConfirm: true,
+  },
+];
+
+const Projects: FC = () => {
+  const [openId, setOpenId] = useState<string | null>(null);
+  const open = PROJECTS.find((p) => p.id === openId) ?? null;
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenId(null);
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  return (
+    <section id="projects">
+      <div className="section-header">
         <div>
-          <div className="project-eyebrow">Featured · RAG System</div>
-          <h3 className="project-name">Meridian</h3>
-          <p className="project-desc">
-            An AI code review system that has actually read your entire
-            codebase. Opens a PR, Meridian retrieves semantically relevant
-            context across the repo using hybrid BM25 + vector search, runs a
-            cross-encoder reranker, and streams a structured, line-annotated
-            review in under 20 seconds.
-          </p>
-          <p className="project-desc">
-            Not a wrapper around an LLM — a retrieval system with an LLM at the
-            end. The distinction is what makes it production-grade.
-          </p>
-          <div className="project-stack">
-            <span className="stack-tag">Python / FastAPI</span>
-            <span className="stack-tag">pgvector</span>
-            <span className="stack-tag">BM25 + RRF</span>
-            <span className="stack-tag">Claude Sonnet</span>
-            <span className="stack-tag">SSE streaming</span>
-            <span className="stack-tag">tree-sitter</span>
-            <span className="stack-tag">TypeScript / Next.js</span>
-          </div>
+          <div className="section-label">Builds</div>
+          <h2 className="section-title">Selected work</h2>
         </div>
-        <div className="project-visual">
-          <div className="project-visual-text">
-            <div className="project-visual-title">Meridian</div>
-            <div
-              style={{
-                color: 'rgba(255,255,255,0.4)',
-                fontSize: 11,
-                letterSpacing: '0.08em',
-              }}
-            >
-              RAG · Review · Stream
+      </div>
+      <div className="builds-list">
+        {PROJECTS.map((p) => (
+          <article key={p.id} className="build-card">
+            <div className="build-main">
+              <div className="build-head">
+                <h3 className="build-name">{p.name}</h3>
+                {p.needsConfirm ? (
+                  <span className="build-flag">confirm details</span>
+                ) : null}
+              </div>
+              <p className="build-line">{p.oneLiner}</p>
+              <div className="project-stack">
+                {p.stack.map((t) => (
+                  <span key={t} className="stack-tag">
+                    {t}
+                  </span>
+                ))}
+              </div>
             </div>
+            <div className="build-actions">
+              <button
+                type="button"
+                className="build-more"
+                onClick={() => setOpenId(p.id)}
+              >
+                Details
+              </button>
+              <a href={p.href} target="_blank" rel="noreferrer" className="build-link">
+                Link ↗
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {open ? (
+        <div
+          className="modal-overlay open"
+          onClick={() => setOpenId(null)}
+          role="presentation"
+        >
+          <div
+            className="build-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="build-drawer-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="close-btn"
+              onClick={() => setOpenId(null)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <div className="section-label">Project</div>
+            <h3 id="build-drawer-title" className="build-drawer-title">
+              {open.name}
+            </h3>
+            <ul className="build-drawer-list">
+              {open.detail.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+            <div className="project-stack" style={{ marginTop: 24 }}>
+              {open.stack.map((t) => (
+                <span key={t} className="stack-tag">
+                  {t}
+                </span>
+              ))}
+            </div>
+            <a
+              href={open.href}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-primary"
+              style={{ marginTop: 28 }}
+            >
+              Open link
+            </a>
           </div>
         </div>
-      </a>
-
-      <a
-        href="https://zebrasearch.moyaqoob28.workers.dev/"
-        target="_blank"
-        className="project-card"
-        rel="noreferrer"
-      >
-        <div className="project-eyebrow">Search Engine · Edge</div>
-        <h3 className="project-name">Zebra Search</h3>
-        <p className="project-desc">
-          Built a complete search engine from first principles — strict-mode crawler, tokenized indexer, multi-factor ranking pipeline, and query UI — with zero off-the-shelf search frameworks.
-        </p>
-        <p className="project-desc">
-          Crawler processed 50,000+ pages with enforced quality gates (minimum content length, keyword density thresholds, duplicate URL fingerprinting) to admit only high-signal documents into the index. Hybrid retrieval model: BM25-style lexical scoring combined with embedding-based semantic similarity, weighted by freshness decay and domain authority signals.
-        </p>
-        <p className="project-desc">
-          Query engine backed by Cloudflare D1 (edge SQLite); globally distributed deployment achieves sub-1s end-to-end query latency with no cold-start penalty.
-        </p>
-        <div className="project-stack">
-          <span className="stack-tag">Cloudflare D1</span>
-          <span className="stack-tag">BM25</span>
-          <span className="stack-tag">Embeddings</span>
-          <span className="stack-tag">Edge SQLite</span>
-          <span className="stack-tag">Crawler</span>
-          <span className="stack-tag">TypeScript</span>
-        </div>
-      </a>
-
-      <a
-        href="https://perplx-web.vercel.app/"
-        target="_blank"
-        className="project-card"
-        rel="noreferrer"
-      >
-        <div className="project-eyebrow">Search · Generation</div>
-        <h3 className="project-name">Answer Engine</h3>
-        <p className="project-desc">
-          A Perplexity-style answer engine built from scratch to understand how
-          retrieval-augmented generation actually works architecturally. Search
-          → scrape → chunk → retrieve → LLM generates with citations. The LLM
-          as a reasoning layer, not a knowledge store.
-        </p>
-        <div className="project-stack">
-          <span className="stack-tag">TypeScript</span>
-          <span className="stack-tag">Bing Search API</span>
-          <span className="stack-tag">Web scraping</span>
-          <span className="stack-tag">RAG pipeline</span>
-          <span className="stack-tag">Streaming</span>
-        </div>
-      </a>
-    </div>
-  </section>
-);
+      ) : null}
+    </section>
+  );
+};
 
 export default Projects;
