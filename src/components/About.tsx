@@ -3,19 +3,19 @@ import type { FC } from 'react';
 const DOMAINS = [
   {
     title: 'Backend & Distributed Systems',
-    body: 'Production APIs with Zod-validated boundaries, retry queues, and webhook signature checks. Studying consensus / replication patterns (MIT 6.824-adjacent) and DBMS internals — join semantics, buffering, what the planner actually decides.',
+    body: 'I care about what happens after the happy path — where state lives, how work is retried, and what breaks when a dependency is slow or wrong. Depth for me means being able to sketch a system’s failure modes before writing the first handler, not memorizing a framework’s API surface.',
   },
   {
     title: 'Agentic AI / LLM Systems',
-    body: 'RAG pipelines where retrieval is the product and the LLM is a reasoning layer — tree-sitter chunking, pgvector, staged workers, Redis Streams for live progress. Trace-log-and-override: expose what the agent did so a human can correct the control path, not just the final text.',
+    body: 'The interesting problem isn’t “call a model.” It’s deciding what the model is allowed to see, what it is allowed to do, and how a human can audit both. I build around retrieval and control: ground answers in real context, stream the steps so the path is visible, and leave an override when the agent is wrong — because opaque generation doesn’t ship.',
   },
   {
     title: 'Search & Retrieval',
-    body: 'Shipped hybrid BM25 + embedding search to the edge (Cloudflare D1), with freshness and authority signals in the ranker. Care about ranking transparency — score breakdowns you can inspect, not a black-box “relevance” number.',
+    body: 'Search is ranking under constraints. Lexical signals catch exactness; semantic signals catch intent; something has to explain why result A beat result B. I want retrieval systems I can debug — score breakdowns and clear tradeoffs — not a single opaque “relevance” number.',
   },
   {
-    title: 'Fundamentals',
-    body: 'OS, DBMS, networks as load-bearing knowledge. GFS: separation of control vs data paths changed how I think about scale. Attention Is All You Need: sequence modeling as content-addressable routing — informs how I design retrieval and context windows, not just “transformers are cool.”',
+    title: 'Core subjects',
+    body: 'I can work comfortably with SQL, operating systems, and computer networks — not as buzzwords, but as tools I use to reason. Queries, indexes, and joins. Processes, scheduling, and memory. Packets, latency, and failure at the wire. That’s the floor I want under every abstraction I build on.',
   },
 ] as const;
 

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Post } from './types/post';
 import { usePosts } from './hooks/usePosts';
+import { STATIC_POSTS } from './content/articles';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import Now from './components/Now';
@@ -29,6 +30,14 @@ function routeFromHash(): 'home' | 'writing' {
 
 export default function App() {
   const { posts, published, savePost, deletePost, fetchPosts } = usePosts();
+  const allPublished = useMemo(() => {
+    const ids = new Set(published.map((p) => p.id));
+    const extras = STATIC_POSTS.filter((p) => !ids.has(p.id));
+    return [...extras, ...published].sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    );
+  }, [published]);
   const [view, setView] = useState<'home' | 'writing'>(routeFromHash);
   const [authOpen, setAuthOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -74,7 +83,7 @@ export default function App() {
           </>
         ) : (
           <Writing
-            posts={published}
+            posts={allPublished}
             onViewArticle={setArticleViewPost}
             onWriteFirst={handleOpenEditor}
           />
