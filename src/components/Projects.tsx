@@ -1,178 +1,128 @@
-import { useEffect, useState, type FC } from 'react';
+import { useState, type FC } from 'react';
+import SkillChip from './SkillChip';
+import { PROJECTS, type ProjectItem } from '../content/site';
 
-interface Project {
-  id: string;
-  name: string;
-  oneLiner: string;
-  stack: string[];
-  href: string;
-  detail: string[];
-  /** Flagged in UI when details are thinner than resume-backed projects */
-  needsConfirm?: boolean;
+interface ProjectsProps {
+  items?: ProjectItem[];
+  featured?: boolean;
+  heading?: boolean;
 }
 
-const PROJECTS: Project[] = [
-  {
-    id: 'meridian',
-    name: 'Meridian',
-    oneLiner:
-      'Agentic PR reviewer: tree-sitter → pgvector retrieval → staged workers with Redis Streams progress and citation mapping.',
-    stack: ['Python', 'FastAPI', 'pgvector', 'Redis', 'Next.js'],
-    href: 'https://github.com/moyaqoob/meridian',
-    detail: [
-      'Indexes the codebase with tree-sitter chunking and 2048-dim embeddings in pgvector; retrieves top chunks by cosine similarity so reviews are grounded in real context.',
-      'GitHub webhooks (HMAC) kick a 4-stage RQ pipeline: validation → retrieval → generation → citation mapping. Redis dedup (24h TTL) and (repo, PR, head SHA) locking keep generation idempotent.',
-      'Clients get live stage progress over Redis Streams SSE with latency metrics and replay on reconnect — the pipeline is legible, not a black box.',
-    ],
-  },
-  {
-    id: 'zebra',
-    name: 'Zebra Search',
-    oneLiner:
-      'Hybrid BM25 + semantic search from first principles, edge-deployed on Cloudflare D1 with sub-1s query latency.',
-    stack: ['TypeScript', 'Cloudflare Workers', 'D1', 'BM25', 'Embeddings'],
-    href: 'https://zebrasearch.moyaqoob28.workers.dev/',
-    detail: [
-      'Crawler, indexer, multi-factor ranking, and query UI — no off-the-shelf search framework.',
-      '50,000+ pages admitted through quality gates (content length, keyword density, duplicate URL fingerprints).',
-      'Lexical + embedding similarity weighted by freshness decay and domain authority; globally distributed, no cold-start tax.',
-    ],
-  },
-  {
-    id: 'redis-clone',
-    name: 'Redis clone (Rust)',
-    oneLiner:
-      'From-scratch Redis-compatible server over raw TCP / RESP — learning the protocol and concurrency model by building it.',
-    stack: ['Rust', 'TCP', 'RESP'],
-    href: 'https://github.com/moyaqoob',
-    detail: [
-      'Implements the RESP wire protocol and a subset of Redis commands over a raw TCP listener.',
-      'Goal: understand connection handling, command parsing, and in-memory data structures without hiding behind a client library.',
-    ],
-    needsConfirm: true,
-  },
-  {
-    id: 'caretrace',
-    name: 'CareTrace',
-    oneLiner:
-      'Trace-oriented system work — details to confirm (link + one-liner from you).',
-    stack: ['TBD'],
-    href: 'https://github.com/moyaqoob',
-    detail: [
-      'Placeholder: you asked to list CareTrace. Replace this blurb, stack chips, and GitHub URL with the real write-up.',
-    ],
-    needsConfirm: true,
-  },
-];
-
-const Projects: FC = () => {
-  const [openId, setOpenId] = useState<string | null>(null);
-  const open = PROJECTS.find((p) => p.id === openId) ?? null;
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpenId(null);
-    };
-    document.addEventListener('keydown', onKey);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-    };
-  }, [open]);
+const Projects: FC<ProjectsProps> = ({
+  items,
+  featured = true,
+  heading = true,
+}) => {
+  const list = items ?? (featured ? PROJECTS.filter((p) => p.featured) : PROJECTS);
+  const [openId, setOpenId] = useState<string | null>(list[0]?.id ?? null);
 
   return (
-    <section id="projects">
-      <div className="section-header">
+    <section id="projects" className="block-section">
+      {heading ? (
         <div>
-          <div className="section-label">Builds</div>
-          <h2 className="section-title">Selected work</h2>
+          {featured ? <p className="kicker">Featured</p> : null}
+          <h2 className="block-title">Projects</h2>
         </div>
-      </div>
-      <div className="builds-list">
-        {PROJECTS.map((p) => (
-          <article key={p.id} className="build-card">
-            <div className="build-main">
-              <div className="build-head">
-                <h3 className="build-name">{p.name}</h3>
-                {p.needsConfirm ? (
-                  <span className="build-flag">confirm details</span>
-                ) : null}
+      ) : null}
+      <div className="project-list">
+        {list.map((p) => {
+          const expanded = openId === p.id;
+          return (
+            <article key={p.id} className="project-card">
+              {p.cover === 'zebra' ? (
+                <div className="project-cover project-cover-zebra" aria-hidden="true">
+                  <div className="zebra-stripes" />
+                  <div className="zebra-panel">
+                    <div className="zebra-search">
+                      <span className="zebra-search-icon" />
+                      <span className="zebra-query">search the index</span>
+                      <span className="zebra-kbd">↵</span>
+                    </div>
+                    <div className="zebra-hits">
+                      <div className="zebra-hit is-top">
+                        <span className="zebra-rank">1</span>
+                        <span className="zebra-hit-line" />
+                      </div>
+                      <div className="zebra-hit">
+                        <span className="zebra-rank">2</span>
+                        <span className="zebra-hit-line short" />
+                      </div>
+                      <div className="zebra-hit">
+                        <span className="zebra-rank">3</span>
+                        <span className="zebra-hit-line mid" />
+                      </div>
+                    </div>
+                  </div>
+                  <span className="zebra-wordmark">Zebra</span>
+                </div>
+              ) : (
+                <div className="project-cover" data-name={p.name}>
+                  <span>{p.name}</span>
+                </div>
+              )}
+              <div className="project-body">
+                <div className="project-head">
+                  <h3>{p.name}</h3>
+                  {p.status ? (
+                    <span className="working-badge">
+                      <span className="working-dot" />
+                      {p.status}
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      className="exp-toggle"
+                      aria-expanded={expanded}
+                      title={expanded ? 'Hide details' : 'Show details'}
+                      onClick={() => setOpenId(expanded ? null : p.id)}
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className={expanded ? 'is-open' : undefined}
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                <p className="project-line">{p.oneLiner}</p>
+                <div className={`exp-body${expanded || p.status ? ' is-open' : ''}`}>
+                  <div>
+                    <h4>Technologies</h4>
+                    <div className="chip-row">
+                      {p.stack.map((t) => (
+                        <SkillChip key={t} label={t} />
+                      ))}
+                    </div>
+                    <div className="exp-bullets">
+                      {p.detail.map((d) => (
+                        <p key={d}>• {d}</p>
+                      ))}
+                    </div>
+                    <a
+                      className="text-link"
+                      href={p.href}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Open project ↗
+                    </a>
+                  </div>
+                </div>
               </div>
-              <p className="build-line">{p.oneLiner}</p>
-              <div className="project-stack">
-                {p.stack.map((t) => (
-                  <span key={t} className="stack-tag">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="build-actions">
-              <button
-                type="button"
-                className="build-more"
-                onClick={() => setOpenId(p.id)}
-              >
-                Details
-              </button>
-              <a href={p.href} target="_blank" rel="noreferrer" className="build-link">
-                Link ↗
-              </a>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
-
-      {open ? (
-        <div
-          className="modal-overlay open"
-          onClick={() => setOpenId(null)}
-          role="presentation"
-        >
-          <div
-            className="build-drawer"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="build-drawer-title"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              className="close-btn"
-              onClick={() => setOpenId(null)}
-              aria-label="Close"
-            >
-              ×
-            </button>
-            <div className="section-label">Project</div>
-            <h3 id="build-drawer-title" className="build-drawer-title">
-              {open.name}
-            </h3>
-            <ul className="build-drawer-list">
-              {open.detail.map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
-            <div className="project-stack" style={{ marginTop: 24 }}>
-              {open.stack.map((t) => (
-                <span key={t} className="stack-tag">
-                  {t}
-                </span>
-              ))}
-            </div>
-            <a
-              href={open.href}
-              target="_blank"
-              rel="noreferrer"
-              className="btn btn-primary"
-              style={{ marginTop: 28 }}
-            >
-              Open link
-            </a>
-          </div>
-        </div>
+      {featured ? (
+        <a href="#/projects" className="text-link">
+          Show all projects
+        </a>
       ) : null}
     </section>
   );

@@ -2,31 +2,22 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Post } from './types/post';
 import { usePosts } from './hooks/usePosts';
 import { STATIC_POSTS } from './content/articles';
+import { routeFromHash, type View } from './lib/routes';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
-import Now from './components/Now';
+import Experience from './components/Experience';
 import About from './components/About';
 import Projects from './components/Projects';
-import Writing from './components/Writing';
+import Skills from './components/Skills';
+import Blogs from './components/Blogs';
+import TalkCta from './components/TalkCta';
+import Explore from './components/Explore';
 import Footer from './components/Footer';
+import { WorkPage, ProjectsPage, WritingPage } from './components/Pages';
 import AuthModal from './components/AuthModal';
 import EditorModal from './components/EditorModal';
 import ArticleViewModal from './components/ArticleViewModal';
 import './App.css';
-
-function routeFromHash(): 'home' | 'writing' {
-  const raw = window.location.hash.replace(/^#/, '');
-  const path = raw.split('?')[0];
-  if (
-    path === '/writing' ||
-    path === 'writing' ||
-    path.startsWith('/writing') ||
-    path.startsWith('writing-')
-  ) {
-    return 'writing';
-  }
-  return 'home';
-}
 
 export default function App() {
   const { posts, published, savePost, deletePost, fetchPosts } = usePosts();
@@ -38,7 +29,7 @@ export default function App() {
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     );
   }, [published]);
-  const [view, setView] = useState<'home' | 'writing'>(routeFromHash);
+  const [view, setView] = useState<View>(routeFromHash);
   const [authOpen, setAuthOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
   const [articleViewPost, setArticleViewPost] = useState<Post | null>(null);
@@ -51,17 +42,12 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (view === 'writing') {
-      window.scrollTo(0, 0);
-    }
+    if (view !== 'home') window.scrollTo(0, 0);
   }, [view]);
 
   const handleOpenEditor = () => {
-    if (editorUnlocked) {
-      setEditorOpen(true);
-    } else {
-      setAuthOpen(true);
-    }
+    if (editorUnlocked) setEditorOpen(true);
+    else setAuthOpen(true);
   };
 
   const handleAuthSuccess = () => {
@@ -73,21 +59,28 @@ export default function App() {
   return (
     <>
       <Nav onOpenEditor={handleOpenEditor} view={view} />
-      <main>
+      <main id="main-content" className="site-main">
         {view === 'home' ? (
-          <>
+          <div className="page-enter">
             <Hero />
-            <Now />
-            <About />
+            <Experience />
             <Projects />
-          </>
-        ) : (
-          <Writing
+            <About />
+            <Skills />
+            <Blogs posts={allPublished} onViewArticle={setArticleViewPost} />
+            <TalkCta />
+            <Explore />
+          </div>
+        ) : null}
+        {view === 'work' ? <WorkPage /> : null}
+        {view === 'projects' ? <ProjectsPage /> : null}
+        {view === 'writing' ? (
+          <WritingPage
             posts={allPublished}
             onViewArticle={setArticleViewPost}
             onWriteFirst={handleOpenEditor}
           />
-        )}
+        ) : null}
         <Footer />
       </main>
       <AuthModal
