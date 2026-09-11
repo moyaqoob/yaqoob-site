@@ -43,7 +43,7 @@ export const EXPERIENCE: ExperienceItem[] = [
       'Shipped a handful of MVPs end to end: the landing page, the one feature that matters, a simple admin, and enough backend that it didn’t fall over the week after we launched.',
       'Built chatbot and AI features on a real backend, not a demo prompt box — answers grounded in the product’s own docs or data, with streaming replies, basic auth, and a log of what the model did when it got it wrong.',
       'Comfortable sitting between AI and backend: retrieval, rate limits, webhooks, retries. The model is the interesting part; keeping it from lying or hanging the server is the job.',
-      'Same loop on client work and my own products (Meridian, Zebra Search): write the spec, design the contracts, ship a thin first version, then stay with it until the edge cases are boring.',
+      'Same loop on client work and my own products (Meridian, Zebra, mem-engine, micrograd): write the spec, design the contracts, ship a thin first version, then stay with it until the edge cases are boring.',
     ],
     tech: ['TypeScript', 'Python', 'React', 'Node.js', 'FastAPI', 'PostgreSQL', 'Redis'],
   },
@@ -76,7 +76,7 @@ export interface ProjectItem {
   detail: string[];
   status?: string;
   featured?: boolean;
-  cover?: 'zebra' | 'plain';
+  cover: string;
 }
 
 export const PROJECTS: ProjectItem[] = [
@@ -84,52 +84,61 @@ export const PROJECTS: ProjectItem[] = [
     id: 'meridian',
     name: 'Meridian',
     oneLiner:
-      'Agentic PR reviewer: tree-sitter → pgvector retrieval → staged workers with Redis Streams progress and citation mapping.',
+      'Agentic PR reviewer that retrieves real code, runs staged workers, and streams the review path live.',
     stack: ['Python', 'FastAPI', 'pgvector', 'Redis', 'Next.js'],
     href: 'https://github.com/moyaqoob/meridian',
     status: 'Building',
     featured: true,
+    cover: '/projects/meridian.png',
     detail: [
-      'Indexes the codebase with tree-sitter chunking and 2048-dim embeddings in pgvector; retrieves top chunks by cosine similarity so reviews are grounded in real context.',
-      'GitHub webhooks (HMAC) kick a 4-stage RQ pipeline: validation → retrieval → generation → citation mapping. Redis dedup (24h TTL) and (repo, PR, head SHA) locking keep generation idempotent.',
-      'Clients get live stage progress over Redis Streams SSE with latency metrics and replay on reconnect — the pipeline is legible, not a black box.',
+      'Indexes a repo with tree-sitter chunking and embeddings in pgvector so reviews are grounded in real context.',
+      'GitHub webhooks kick a staged pipeline: validation → retrieval → generation → citation mapping, with Redis locking so the same PR head does not double-run.',
+      'Clients watch stage progress over Redis Streams SSE — the review is a visible path, not a black box.',
     ],
   },
   {
     id: 'zebra',
     name: 'Zebra Search',
     oneLiner:
-      'Hybrid BM25 + semantic search from first principles, edge-deployed on Cloudflare D1 with sub-1s query latency.',
-    stack: ['TypeScript', 'Cloudflare Workers', 'D1', 'BM25', 'Embeddings'],
+      'Hybrid BM25 + semantic search from first principles, edge-deployed with sub-1s query latency.',
+    stack: ['TypeScript', 'Cloudflare Workers', 'D1', 'BM25'],
     href: 'https://zebrasearch.moyaqoob28.workers.dev/',
     featured: true,
-    cover: 'zebra',
+    cover: '/projects/zebra.png',
     detail: [
-      'Crawler, indexer, multi-factor ranking, and query UI — no off-the-shelf search framework.',
-      '50,000+ pages admitted through quality gates (content length, keyword density, duplicate URL fingerprints).',
-      'Lexical + embedding similarity weighted by freshness decay and domain authority; globally distributed, no cold-start tax.',
+      'Crawler, indexer, ranking, and query UI — no off-the-shelf search framework.',
+      'Lexical + embedding similarity weighted by freshness and domain authority.',
+      'Runs on Cloudflare Workers + D1 so the index stays close to the edge.',
     ],
   },
   {
-    id: 'redis-clone',
-    name: 'Redis clone (Rust)',
+    id: 'mem-engine',
+    name: 'mem-engine',
     oneLiner:
-      'From-scratch Redis-compatible server over raw TCP / RESP — learning the protocol and concurrency model by building it.',
-    stack: ['Rust', 'TCP', 'RESP'],
-    href: 'https://github.com/moyaqoob',
+      'Personal memory that lives on your machine — it reads the browser, terminal, git, and files.',
+    stack: ['TypeScript', 'Python', 'Local embeddings'],
+    href: 'https://github.com/moyaqoob/mem-engine',
+    featured: true,
+    cover: '/projects/mem-engine.png',
     detail: [
-      'Implements the RESP wire protocol and a subset of Redis commands over a raw TCP listener.',
-      'Goal: understand connection handling, command parsing, and in-memory data structures without hiding behind a client library.',
+      'A local memory layer that watches what you are already doing: browser tabs, terminal history, git activity, and files on disk.',
+      'Keeps that context on your computer so an agent can recall recent work without sending everything to the cloud.',
+      'Built for personal use — one machine, your data, searchable memory across the tools you already open every day.',
     ],
   },
   {
-    id: 'caretrace',
-    name: 'CareTrace',
-    oneLiner: 'Trace-oriented system work — details to confirm.',
-    stack: ['Systems'],
-    href: 'https://github.com/moyaqoob',
+    id: 'micrograd',
+    name: 'micrograd',
+    oneLiner:
+      'A tiny neural engine in NumPy — scalars, graphs, and backprop you can actually read.',
+    stack: ['Python', 'NumPy'],
+    href: 'https://github.com/moyaqoob/micrograd',
+    featured: true,
+    cover: '/projects/micrograd.png',
     detail: [
-      'Placeholder: replace this blurb, stack chips, and GitHub URL with the real write-up.',
+      'A small autograd engine: build a computation graph from scalars, then reverse-mode backprop through it.',
+      'Enough to train a tiny MLP without a heavy framework — good for understanding how gradients actually move.',
+      'NumPy under the hood, short code path, no magic.',
     ],
   },
 ];
