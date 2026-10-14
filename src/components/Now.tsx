@@ -9,8 +9,8 @@ const Now: FC = () => (
       </div>
     </div>
     <p className="now-body">
-      Building Meridian (agentic PR review with retrieval + streamed pipeline
-      visibility) and sharpening distributed-systems fundamentals. Looking for
+      Shipping an HRMS and an accounting product at Yuvi Works and sharpening
+      distributed-systems fundamentals. Looking for
       founding / early engineer roles at lean AI startups where backend depth
       and system legibility matter more than feature velocity theater.
     </p>

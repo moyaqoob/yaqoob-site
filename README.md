@@ -75,7 +75,6 @@ infra/
 ## `$ git log --oneline --projects`
 
 ```
-meridian      agentic PR review — retrieve repo context, staged pipeline, streamed progress
 zebra-search  hybrid BM25 + semantic search from scratch · edge · sub-1s queries
 sketch.io     realtime collaborative whiteboard over websockets
 signal        full-stack markets UI — trades, charts, company updates
@@ -87,7 +86,6 @@ signal        full-stack markets UI — trades, charts, company updates
 
 ```
 PID   PROCESS                          LOAD
-001   meridian / retrieval + agents    high
 002   os — process scheduling          med
 003   distributed-systems fundamentals med
 004   search & ranking                 med

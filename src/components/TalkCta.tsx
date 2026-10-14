@@ -8,9 +8,8 @@ const TalkCta: FC = () => (
       {PROFILE.email}
     </a>
     <ul className="proof-inline">
-      <li>350+ DSA problems · LeetCode / HackerRank</li>
+      <li>400+ LeetCode problems solved</li>
       <li>14+ contests · rating +65%</li>
-      <li>Stalwart.ae intern · ~40% fewer failed payment transactions</li>
     </ul>
   </section>
 );

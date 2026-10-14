@@ -35,9 +35,17 @@ const Experience: FC<ExperienceProps> = ({
             <article key={job.id} className="exp-card">
               <div className="exp-top">
                 <div className="exp-identity">
-                  <div className="exp-mark" aria-hidden="true">
-                    {job.company.slice(0, 1)}
-                  </div>
+                  {job.logo ? (
+                    <img
+                      src={job.logo}
+                      alt={`${job.company} logo`}
+                      className="exp-mark exp-mark-logo"
+                    />
+                  ) : (
+                    <div className="exp-mark" aria-hidden="true">
+                      {job.company.slice(0, 1)}
+                    </div>
+                  )}
                   <div>
                     <div className="exp-name-row">
                       <h3>{job.company}</h3>
@@ -88,7 +96,7 @@ const Experience: FC<ExperienceProps> = ({
                   <p>
                     {job.start} - {job.end}
                   </p>
-                  <p>{job.location}</p>
+                  {job.location ? <p>{job.location}</p> : null}
                 </div>
               </div>
               <div className="exp-preview">
@@ -110,12 +118,16 @@ const Experience: FC<ExperienceProps> = ({
                       ))}
                     </div>
                   ) : null}
-                  <h4>Technologies</h4>
-                  <div className="chip-row">
-                    {job.tech.map((t) => (
-                      <SkillChip key={t} label={t} />
-                    ))}
-                  </div>
+                  {job.tech.length > 0 ? (
+                    <>
+                      <h4>Technologies</h4>
+                      <div className="chip-row">
+                        {job.tech.map((t) => (
+                          <SkillChip key={t} label={t} />
+                        ))}
+                      </div>
+                    </>
+                  ) : null}
                 </div>
               </div>
             </article>

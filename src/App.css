@@ -486,6 +486,13 @@ a { color: inherit; }
   flex-shrink: 0;
 }
 
+.exp-mark-logo {
+  background: #fff;
+  object-fit: contain;
+  padding: 0.2rem;
+  border: 1px solid var(--line, rgba(128, 128, 128, 0.3));
+}
+
 .exp-name-row {
   display: flex;
   align-items: center;

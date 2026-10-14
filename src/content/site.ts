@@ -7,7 +7,7 @@ export const PROFILE = {
   linkedin: 'https://linkedin.com/in/moyaqoob',
   photo: '/me.png',
   statusTitle: 'Building & shipping',
-  statusDetail: 'Working on Meridian',
+  statusDetail: 'Working at Yuvi Works',
 };
 
 export const HERO_CHIPS = [
@@ -22,7 +22,8 @@ export interface ExperienceItem {
   role: string;
   start: string;
   end: string;
-  location: string;
+  location?: string;
+  logo?: string;
   working?: boolean;
   website?: string;
   bullets: string[];
@@ -31,21 +32,20 @@ export interface ExperienceItem {
 
 export const EXPERIENCE: ExperienceItem[] = [
   {
-    id: 'freelance',
-    company: 'Freelance',
-    role: 'Full-stack engineer',
-    start: '2025',
+    id: 'yuvi-works',
+    company: 'Yuvi Works Pvt Ltd',
+    role: 'Full Stack Engineer',
+    start: 'Sep 2026',
     end: 'Present',
-    location: 'Remote',
+    logo: '/logos/yuvi-works.png',
     working: true,
     bullets: [
-      'Most of the work starts the same way: someone has a messy idea, and I turn it into a small product that actually runs — login, the main flow, an API, a database, and the bits that break when a user does something weird.',
-      'Shipped a handful of MVPs end to end: the landing page, the one feature that matters, a simple admin, and enough backend that it didn’t fall over the week after we launched.',
-      'Built chatbot and AI features on a real backend, not a demo prompt box — answers grounded in the product’s own docs or data, with streaming replies, basic auth, and a log of what the model did when it got it wrong.',
-      'Comfortable sitting between AI and backend: retrieval, rate limits, webhooks, retries. The model is the interesting part; keeping it from lying or hanging the server is the job.',
-      'Same loop on client work and my own products (Meridian, Zebra, mem-engine, micrograd): write the spec, design the contracts, ship a thin first version, then stay with it until the edge cases are boring.',
+      'Own features end to end across two products — an HRMS and an accounting platform in the space of Zoho Books and Vyapar — from requirements, data model and APIs through the UI to production.',
+      'Ship to production every day: small, tested changes released continuously instead of batched into risky big-bang deploys.',
+      'Write automated tests alongside every feature, so the HRMS and accounting flows stay safe to change at a daily release pace.',
+      'Profile and tune the HRMS across frontend and backend to make the whole app faster and more reliable, not just individual screens.',
     ],
-    tech: ['TypeScript', 'Python', 'React', 'Node.js', 'FastAPI', 'PostgreSQL', 'Redis'],
+    tech: [],
   },
   {
     id: 'stalwart',
@@ -55,15 +55,15 @@ export const EXPERIENCE: ExperienceItem[] = [
     end: '2024',
     location: 'Dubai, UAE (Remote)',
     website: 'https://stalwart.ae',
+    logo: '/logos/stalwart.png',
     bullets: [
       'Delivered production features across a React + Node.js stack, owning the full cycle from spec to live deployment in an agile sprint cadence.',
-      'Integrated third-party payment and logistics APIs with retry queues and webhook signature validation, reducing failed transaction incidents by ~40%.',
+      'Integrated third-party payment and logistics APIs with retry queues and webhook signature validation.',
       'Migrated untyped REST route handlers to strict Zod-validated schemas, eliminating a class of runtime input errors at the API boundary before they reached the database.',
-      'Established the team’s first test coverage on financial flows using Jest, covering critical payment paths end-to-end.',
       'Designed the payment webhook path as a queue, not a one-shot handler: verify the signature, persist an idempotent event, then update order state so a delayed or duplicated provider callback could not double-charge or leave a checkout stuck.',
       'Shipped logistics status as an inbound webhook → validate → write status → surface in the UI loop, so the team could see where a shipment actually was instead of living in a vendor dashboard.',
     ],
-    tech: ['TypeScript', 'React', 'Node.js', 'Zod', 'Jest', 'PostgreSQL'],
+    tech: ['TypeScript', 'React', 'Node.js', 'Zod', 'PostgreSQL'],
   },
 ];
 
@@ -80,22 +80,6 @@ export interface ProjectItem {
 }
 
 export const PROJECTS: ProjectItem[] = [
-  {
-    id: 'meridian',
-    name: 'Meridian',
-    oneLiner:
-      'Agentic PR reviewer that retrieves real code, runs staged workers, and streams the review path live.',
-    stack: ['Python', 'FastAPI', 'pgvector', 'Redis', 'Next.js'],
-    href: 'https://github.com/moyaqoob/meridian',
-    status: 'Building',
-    featured: true,
-    cover: '/projects/meridian.png',
-    detail: [
-      'Indexes a repo with tree-sitter chunking and embeddings in pgvector so reviews are grounded in real context.',
-      'GitHub webhooks kick a staged pipeline: validation → retrieval → generation → citation mapping, with Redis locking so the same PR head does not double-run.',
-      'Clients watch stage progress over Redis Streams SSE — the review is a visible path, not a black box.',
-    ],
-  },
   {
     id: 'zebra',
     name: 'Zebra Search',
