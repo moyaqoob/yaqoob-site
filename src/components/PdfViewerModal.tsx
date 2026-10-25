@@ -1,4 +1,5 @@
-import { type FC, type MouseEvent } from 'react';
+import { useEffect, type FC, type MouseEvent } from 'react';
+import { createPortal } from 'react-dom';
 
 export const RESUME_URL = '/Founding-Engineer-Mohd-Yaqoob.pdf';
 export const RESUME_FILENAME = 'Founding Engineer - Mohd Yaqoob.pdf';
@@ -20,10 +21,31 @@ interface PdfViewerModalProps {
 }
 
 const PdfViewerModal: FC<PdfViewerModalProps> = ({ open, onClose }) => {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [open, onClose]);
+
   if (!open) return null;
 
-  return (
-    <div className="modal-overlay open" onClick={onClose}>
+  // Rendered on <body> so the page's animated sections and fixed nav
+  // can't push the modal off-centre or sit on top of it.
+  return createPortal(
+    <div
+      className="modal-overlay open"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Resume"
+      style={{ zIndex: 10000 }}
+    >
       <div
         style={{
           background: '#0E0E0E',
@@ -98,11 +120,12 @@ const PdfViewerModal: FC<PdfViewerModalProps> = ({ open, onClose }) => {
           <embed
             src={RESUME_URL}
             type="application/pdf"
-            style={{ width: '100%', height: '80vh', display: 'block' }}
+            style={{ width: '100%', height: 'calc(92vh - 57px)', display: 'block' }}
           />
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 
