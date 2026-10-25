@@ -1,5 +1,5 @@
 import { useState, type FC } from 'react';
-import PdfViewerModal from './PdfViewerModal';
+import PdfViewerModal, { RESUME_URL, openResume } from './PdfViewerModal';
 import { PROFILE } from '../content/site';
 
 const Footer: FC = () => {
@@ -17,9 +17,14 @@ const Footer: FC = () => {
           <a href={PROFILE.linkedin} target="_blank" rel="noreferrer">
             LinkedIn
           </a>
-          <button type="button" className="text-link" onClick={() => setPdfOpen(true)}>
+          <a
+            href={RESUME_URL}
+            target="_blank"
+            rel="noopener"
+            onClick={(e) => openResume(e, () => setPdfOpen(true))}
+          >
             Resume
-          </button>
+          </a>
         </div>
       </footer>
       <PdfViewerModal open={pdfOpen} onClose={() => setPdfOpen(false)} />

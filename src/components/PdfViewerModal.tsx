@@ -1,4 +1,18 @@
-import { type FC } from 'react';
+import { type FC, type MouseEvent } from 'react';
+
+export const RESUME_URL = '/Founding-Engineer-Mohd-Yaqoob.pdf';
+export const RESUME_FILENAME = 'Founding Engineer - Mohd Yaqoob.pdf';
+
+// Phones and tablets can't show a PDF inside <embed>, so there we let the
+// link open the PDF directly. Only desktop gets the in-page modal.
+export const openResume = (e: MouseEvent<HTMLAnchorElement>, openModal: () => void) => {
+  const canEmbedPdf =
+    window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+    window.innerWidth >= 768;
+  if (!canEmbedPdf || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+  e.preventDefault();
+  openModal();
+};
 
 interface PdfViewerModalProps {
   open: boolean;
@@ -41,12 +55,12 @@ const PdfViewerModal: FC<PdfViewerModalProps> = ({ open, onClose }) => {
               color: 'rgba(255,255,255,0.5)',
             }}
           >
-            yaqoob-res.pdf
+            {RESUME_FILENAME}
           </span>
           <div style={{ display: 'flex', gap: 8 }}>
             <a
-              href="/yaqoob-res.pdf"
-              download
+              href={RESUME_URL}
+              download={RESUME_FILENAME}
               className="btn btn-primary"
               style={{
                 fontSize: 12,
@@ -82,7 +96,7 @@ const PdfViewerModal: FC<PdfViewerModalProps> = ({ open, onClose }) => {
         </div>
         <div style={{ flex: 1, minHeight: 0 }}>
           <embed
-            src="/yaqoob-res.pdf"
+            src={RESUME_URL}
             type="application/pdf"
             style={{ width: '100%', height: '80vh', display: 'block' }}
           />
